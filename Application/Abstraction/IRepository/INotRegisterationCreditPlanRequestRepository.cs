@@ -1,4 +1,5 @@
-﻿using Domain.Entites;
+﻿using Application.Common;
+using Domain.Entites;
 
 namespace Application.Abstraction.IRepository
 {
@@ -6,5 +7,8 @@ namespace Application.Abstraction.IRepository
     {
         Task Insert(NotRegisterationCreditPlanRequest model, CancellationToken cancellationToken);
         Task BulkInsert(List<NotRegisterationCreditPlanRequest> models, CancellationToken cancellationToken);
+        Task<List<NotRegisterationCreditPlanRequest>> GetByNoneStatus(CancellationToken cancellationToken);
+
+        Task UpdateStatus(List<long> ids, NotRegisterationStatusType status, CancellationToken cancellationToken);
     }
 }

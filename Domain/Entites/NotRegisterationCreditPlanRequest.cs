@@ -22,4 +22,8 @@ public partial class NotRegisterationCreditPlanRequest
     public byte Status { get; set; } = 0;
 
     public string ClientId { get; set; } = null!;
+
+    public long GroupId { get; set; }
+
+    public string Level { get; set; } = null!;
 }

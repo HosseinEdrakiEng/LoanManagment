@@ -99,7 +99,13 @@ namespace Infrastructure.Persistence
                 entity.ToTable("NotRegisterationCreditPlanRequest");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.ClientId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");
+                entity.Property(e => e.Level)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
                 entity.Property(e => e.NationalCode)
                     .HasMaxLength(100)
                     .IsUnicode(false);
@@ -107,9 +113,6 @@ namespace Infrastructure.Persistence
                     .HasMaxLength(100)
                     .IsUnicode(false);
                 entity.Property(e => e.UserId)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-                entity.Property(e => e.ClientId)
                     .HasMaxLength(100)
                     .IsUnicode(false);
             });

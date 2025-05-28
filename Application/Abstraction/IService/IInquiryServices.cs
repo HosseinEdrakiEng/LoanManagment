@@ -1,0 +1,14 @@
+﻿using Application.Model;
+using Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.Abstraction.IService;
+
+public interface IInquiryServices
+{
+    Task<BaseResponse<RaitingResponseModel>> Raiting(string nationalCode, CancellationToken cancellationToken);
+}

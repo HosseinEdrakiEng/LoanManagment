@@ -1,0 +1,118 @@
+﻿using Application.Abstraction.IService;
+using Application.Common;
+using Application.Model;
+using Azure.Core;
+using Helper;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace Infrastructure.Service;
+
+public class WalletServices : IWalletServices
+{
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger<WalletServices> _logger;
+    private readonly WalletConfig _config;
+    public WalletServices(IHttpClientFactory httpClientFactory,
+        ILogger<WalletServices> logger,
+        IOptions<WalletConfig> config)
+    {
+        _httpClientFactory = httpClientFactory;
+        _logger = logger;
+        _config = config.Value;
+    }
+    public async Task<BaseResponse<CreateWalletResponseModel>> CreateWallet(CreateWalletRequestModel request , CancellationToken cancellationToken)
+    {
+        var response = new BaseResponse<object>();
+
+        var headers = new Dictionary<string, string>
+            {
+                { "Content-Type", "application/json" }
+            };
+        var apiResponse = await _httpClientFactory.ApiCall("Wallet", request, HttpMethod.Post, _config.CreateUrl, headers, cancellationToken);
+
+        _logger.LogInformation($"CreateWallet log : '{apiResponse.SerializeAsJson()}'");
+
+        if (!apiResponse.IsSuccessStatusCode)
+        {
+            // response.Error = CustomError.BalanceLoanFail;
+            return response;
+        }
+
+        response.Data = JsonSerializer.Deserialize<object>(apiResponse.Response);
+        return response;
+    }
+    public async Task<BaseResponse<ChargeResponseModel>> Charge(ChargeRequestModel request,CancellationToken cancellationToken)
+    {
+        var response = new BaseResponse<object>();
+
+        var headers = new Dictionary<string, string>
+            {
+                { "Content-Type", "application/json" }
+            };
+
+        var apiResponse = await _httpClientFactory.ApiCall("Wallet", request, HttpMethod.Post, _config.ChargeUrl, headers, cancellationToken);
+
+        _logger.LogInformation($"Charge log : '{apiResponse.SerializeAsJson()}'");
+
+        if (!apiResponse.IsSuccessStatusCode)
+        {
+           // response.Error = CustomError.BalanceLoanFail;
+            return response;
+        }
+
+        response.Data = JsonSerializer.Deserialize<object>(apiResponse.Response);
+        return response;
+    }
+    public async Task<BaseResponse<object>> Advice(AdviceRequestModel request, CancellationToken cancellationToken)
+    {
+        var response = new BaseResponse<object>();
+
+        var headers = new Dictionary<string, string>
+            {
+                { "Content-Type", "application/json" }
+            };
+
+        var apiResponse = await _httpClientFactory.ApiCall("Wallet", request, HttpMethod.Post, _config.AdviceUrl, headers, cancellationToken);
+
+        _logger.LogInformation($"Advice log : '{apiResponse.SerializeAsJson()}'");
+
+        if (!apiResponse.IsSuccessStatusCode)
+        {
+            // response.Error = CustomError.BalanceLoanFail;
+            return response;
+        }
+
+        response.Data = JsonSerializer.Deserialize<object>(apiResponse.Response);
+        return response;
+    }
+    public async Task<BaseResponse<object>> Reverse(ReverseRequestModel request, CancellationToken cancellationToken)
+    {
+        var response = new BaseResponse<object>();
+
+        var headers = new Dictionary<string, string>
+            {
+                { "Content-Type", "application/json" }
+            };
+
+        var apiResponse = await _httpClientFactory.ApiCall("Wallet", request, HttpMethod.Post, _config.ReverseUrl, headers, cancellationToken);
+
+        _logger.LogInformation($"Reverse log : '{apiResponse.SerializeAsJson()}'");
+
+        if (!apiResponse.IsSuccessStatusCode)
+        {
+            // response.Error = CustomError.BalanceLoanFail;
+            return response;
+        }
+
+        response.Data = JsonSerializer.Deserialize<object>(apiResponse.Response);
+        return response;
+    }
+
+}

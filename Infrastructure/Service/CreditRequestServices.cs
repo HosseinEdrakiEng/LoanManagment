@@ -30,8 +30,6 @@ public class CreditRequestServices(ICreditRequestRepository creditRequestReposit
     {
         var response = new BaseResponse<CreateCerditRequestResponseModel>();
 
-        await InsertCerditRequest(request, RequestStep.Create, cancellationToken);
-
         var creditPlan = await creditPlanRepository.GetAsync(request.PlanId, cancellationToken);
         if (creditPlan == null)
         {
@@ -39,6 +37,9 @@ public class CreditRequestServices(ICreditRequestRepository creditRequestReposit
             return response;
         }
 
+        await InsertCerditRequest(request, RequestStep.Create, cancellationToken);
+
+      
         if (creditPlan.GuarantyType.HasValue && creditPlan.GuarantyType > 0)
         {
             await InsertCerditRequest(request, RequestStep.UploadDocumentUploadDocuments, cancellationToken);

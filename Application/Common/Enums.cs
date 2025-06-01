@@ -7,11 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Common;
 
-public enum NotRegisterationStatusType : byte
-{
-    None = 0,
-    Done = 1
-}
+
 public enum CreditPlanType : byte
 {
     None = 0
@@ -36,13 +32,11 @@ public enum LoanType : byte
 
 public enum RequestStep : byte
 {
-    [Description("ایجاد")]
-    Create = 1,
 
     [Description("در انتظار آپلود مدارک")]
-    UploadDocumentUploadDocuments = 2,
+    UploadDocumentUploadDocuments = 1,
 
     [Description("تکمیل شده")]
-    Finalizing = 3,
+    Finalizing = 2,
 
 }

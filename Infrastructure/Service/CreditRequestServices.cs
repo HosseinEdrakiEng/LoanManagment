@@ -39,7 +39,6 @@ public class CreditRequestServices(ICreditRequestRepository creditRequestReposit
 
         await InsertCerditRequest(request, RequestStep.Create, cancellationToken);
 
-      
         if (creditPlan.GuarantyType.HasValue && creditPlan.GuarantyType > 0)
         {
             await InsertCerditRequest(request, RequestStep.UploadDocumentUploadDocuments, cancellationToken);

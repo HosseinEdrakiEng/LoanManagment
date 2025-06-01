@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ public class WalletServices : IWalletServices
     }
     public async Task<BaseResponse<CreateWalletResponseModel>> CreateWallet(CreateWalletRequestModel request , CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<object>();
+        var response = new BaseResponse<CreateWalletResponseModel>();
 
         var headers = new Dictionary<string, string>
             {
@@ -45,12 +46,12 @@ public class WalletServices : IWalletServices
             return response;
         }
 
-        response.Data = JsonSerializer.Deserialize<object>(apiResponse.Response);
+        response.Data = JsonSerializer.Deserialize<CreateWalletResponseModel>(apiResponse.Response);
         return response;
     }
     public async Task<BaseResponse<ChargeResponseModel>> Charge(ChargeRequestModel request,CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<object>();
+        var response = new BaseResponse<ChargeResponseModel>();
 
         var headers = new Dictionary<string, string>
             {
@@ -61,13 +62,14 @@ public class WalletServices : IWalletServices
 
         _logger.LogInformation($"Charge log : '{apiResponse.SerializeAsJson()}'");
 
-        if (!apiResponse.IsSuccessStatusCode)
+        if (!apiResponse.IsSuccessStatusCode
+            || string.IsNullOrWhiteSpace(apiResponse.Response))
         {
-           // response.Error = CustomError.BalanceLoanFail;
+            response.Error = CustomErrors.WalletError;
             return response;
         }
 
-        response.Data = JsonSerializer.Deserialize<object>(apiResponse.Response);
+        response.Data = JsonSerializer.Deserialize<ChargeResponseModel>(apiResponse.Response);
         return response;
     }
     public async Task<BaseResponse<object>> Advice(AdviceRequestModel request, CancellationToken cancellationToken)

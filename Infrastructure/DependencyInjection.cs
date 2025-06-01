@@ -1,6 +1,7 @@
 ﻿using Application.Abstraction;
 using Application.Abstraction.IRepository;
 using Application.Abstraction.IService;
+using Application.Common;
 using Helper;
 using Infrastructure.Persistence;
 using Infrastructure.Repository;
@@ -15,8 +16,9 @@ namespace Infrastructure
     {
         public static IServiceCollection ConfigureOption(this IServiceCollection services, IConfiguration configuration)
         {
-            //services.Configure<NotificationConfig>(configuration.GetSection("NotificationConfig"));
-            services.Configure<SsoConfig>(configuration.GetSection("SsoConfig"));
+            
+            services.Configure<InqueryConfig>(configuration.GetSection("InqueryConfig"));
+            services.Configure<WalletConfig>(configuration.GetSection("WalletConfig"));
             return services;
         }
 
@@ -32,16 +34,13 @@ namespace Infrastructure
 
         public static IServiceCollection AddRepository(this IServiceCollection services)
         {
-            services.AddScoped<INotRegisterationCreditPlanRequestRepository, NotRegisterationCreditPlanRequestRepository>();
+            services.AddScoped<ICreditPlanRepository, CreditPlanRepository>();
             return services;
         }
 
         public static IServiceCollection AddService(this IServiceCollection services)
         {
-
-
-
-            services.AddScoped<INotRegisterationCreditPlanRequestServices, NotRegisterationCreditPlanRequestServices>();
+            services.AddScoped<ICreditRequestServices, CreditRequestServices>();
             return services;
         }
     }

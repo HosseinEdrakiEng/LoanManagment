@@ -1,6 +1,5 @@
 ﻿using Application.Model;
-using Domain;
-using Domain.Entites;
+using Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Abstraction;
 
-public interface ICreditPlanRepository
+public interface IUserServices
 {
-    Task<CreditPlanModel> GetAsync(long id, CancellationToken cancellationToken);
+    Task<BaseResponse<UserProfileResponseModel>> Profile(string mobileNumber, CancellationToken cancellationToken);
 }

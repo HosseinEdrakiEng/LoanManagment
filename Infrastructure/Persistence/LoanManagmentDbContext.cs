@@ -1,4 +1,5 @@
 ﻿using Application.Abstraction;
+using Domain;
 using Domain.Entites;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,124 +16,115 @@ namespace Infrastructure.Persistence
         {
         }
 
-        public virtual DbSet<CreditLevel> CreditLevels { get; set; }
 
-        public virtual DbSet<CreditLimit> CreditLimits { get; set; }
+        public virtual DbSet<CreditLevelModel> CreditLevels { get; set; }
 
-        public virtual DbSet<CreditPlan> CreditPlans { get; set; }
+        public virtual DbSet<CreditLoanModel> CreditLoans { get; set; }
 
-        public virtual DbSet<CreditPlanRequest> CreditPlanRequests { get; set; }
+        public virtual DbSet<CreditPlanModel> CreditPlans { get; set; }
 
-        public virtual DbSet<CreditRate> CreditRates { get; set; }
+        public virtual DbSet<CreditRequestModel> CreditRequests { get; set; }
 
-        public virtual DbSet<NotRegisterationCreditPlanRequest> NotRegisterationCreditPlanRequests { get; set; }
+        public virtual DbSet<InstallmentModel> Installments { get; set; }
 
-        public virtual DbSet<UserLimit> UserLimits { get; set; }
+        public virtual DbSet<LimitationModel> Limitations { get; set; }
+
+        public virtual DbSet<LoanTypeModel> LoanTypes { get; set; }
+
+        public virtual DbSet<PaymentTypeModel> PaymentTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CreditLevel>(entity =>
+            modelBuilder.Entity<CreditLevelModel>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("Level_PK");
-
-                entity.ToTable("CreditLevel");
-
-                entity.Property(e => e.Title).HasMaxLength(200);
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.Title).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<CreditLimit>(entity =>
+            modelBuilder.Entity<CreditLoanModel>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("CreditLimit_PK");
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
 
-                entity.ToTable("CreditLimit");
-
-                entity.HasOne(d => d.CreditLevel).WithMany(p => p.CreditLimits)
-                    .HasForeignKey(d => d.CreditLevelId)
+                entity.HasOne(d => d.CreditRequest).WithMany(p => p.CreditLoans)
+                    .HasForeignKey(d => d.CreditRequestId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("CreditLimit_CreditLevel_FK");
-
-                entity.HasOne(d => d.CreditRate).WithMany(p => p.CreditLimits)
-                    .HasForeignKey(d => d.CreditRateId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("CreditLimit_CreditRate_FK");
+                    .HasConstraintName("FK_CreditLoans_CreditRequests");
             });
 
-            modelBuilder.Entity<CreditPlan>(entity =>
+            modelBuilder.Entity<CreditPlanModel>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("Plan_PK");
-
-                entity.ToTable("CreditPlan");
-
-                entity.Property(e => e.Title).HasMaxLength(300);
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
+                entity.Property(e => e.ExpirationDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.Title).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<CreditPlanRequest>(entity =>
+            modelBuilder.Entity<CreditRequestModel>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("CreditPlanRequest_PK");
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
 
-                entity.ToTable("CreditPlanRequest");
-
-                entity.Property(e => e.CreateTime).HasColumnType("datetime");
-                entity.Property(e => e.UserId)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.CreditPlan).WithMany(p => p.CreditPlanRequests)
+                entity.HasOne(d => d.CreditPlan).WithMany(p => p.CreditRequests)
                     .HasForeignKey(d => d.CreditPlanId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("CreditPlanRequest_CreditPlan_FK");
+                    .HasConstraintName("FK_CreditRequests_CreditPlans");
             });
 
-            modelBuilder.Entity<CreditRate>(entity =>
+            modelBuilder.Entity<InstallmentModel>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("CreditRate_PK");
+                entity.HasKey(e => e.Id).HasName("PK_Installment");
 
-                entity.ToTable("CreditRate");
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.SettlementDate).HasColumnType("datetime");
 
-                entity.Property(e => e.Range).HasMaxLength(200);
+                entity.HasOne(d => d.CreditLoan).WithMany(p => p.Installments)
+                    .HasForeignKey(d => d.CreditLoanId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Installments_CreditLoans");
+
+                entity.HasOne(d => d.InstallmentRef).WithMany(p => p.InverseInstallmentRef)
+                    .HasForeignKey(d => d.InstallmentRefId)
+                    .HasConstraintName("FK_Installment_Installment");
             });
 
-            modelBuilder.Entity<NotRegisterationCreditPlanRequest>(entity =>
+            modelBuilder.Entity<LimitationModel>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("NotCompletedCreditPlanRequest_PK");
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
 
-                entity.ToTable("NotRegisterationCreditPlanRequest");
+                entity.HasOne(d => d.CreditLevel).WithMany(p => p.Limitations)
+                    .HasForeignKey(d => d.CreditLevelId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Limitations_CreditLevels");
+
+                entity.HasOne(d => d.CreditPlan).WithMany(p => p.Limitations)
+                    .HasForeignKey(d => d.CreditPlanId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Limitations_CreditPlans");
+            });
+
+            modelBuilder.Entity<LoanTypeModel>(entity =>
+            {
+                entity.ToTable("LoanType");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.ClientId)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-                entity.Property(e => e.CreateTime).HasColumnType("datetime");
-                entity.Property(e => e.Level)
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-                entity.Property(e => e.NationalCode)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-                entity.Property(e => e.PhoneNumber)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-                entity.Property(e => e.UserId)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+                entity.Property(e => e.Title)
+                    .HasMaxLength(10)
+                    .IsFixedLength();
             });
 
-            modelBuilder.Entity<UserLimit>(entity =>
+            modelBuilder.Entity<PaymentTypeModel>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("UserLimit_PK");
+                entity.ToTable("PaymentType");
 
-                entity.ToTable("UserLimit");
-
-                entity.Property(e => e.UserId)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.CreditLimit).WithMany(p => p.UserLimits)
-                    .HasForeignKey(d => d.CreditLimitId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("UserLimit_CreditLimit_FK");
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Title)
+                    .HasMaxLength(10)
+                    .IsFixedLength();
             });
-
             OnModelCreatingPartial(modelBuilder);
         }
 

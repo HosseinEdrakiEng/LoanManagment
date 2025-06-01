@@ -12,12 +12,12 @@ builder.Services.AddSerilogger(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
-//builder.Services.AddProviderHttpClient(builder.Configuration, "Notification", "NotificationConfig");
+builder.Services.AddProviderHttpClient(builder.Configuration, "Wallet", "WalletConfig");
+builder.Services.AddProviderHttpClient(builder.Configuration, "Inquery", "InqueryConfig");
 builder.Services.AddReqResLogging();
 builder.Services.AddOptions();
 builder.Services.AddApiVersion();
 builder.Services.AddExceptionMiddleware();
-builder.Services.AddSsoConfig(builder.Configuration);
 
 builder.Services.AddHostedService<BackgroundWorkerService>();
 

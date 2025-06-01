@@ -16,7 +16,7 @@ public enum CreditPlanType : byte
 {
     None = 0
 }
-public enum ConfigType : byte
+public enum LoanType : byte
 {
     [Description("نقدی")]
     Deposit = 1,
@@ -32,4 +32,17 @@ public enum ConfigType : byte
 
     [Description("FourInstallment")]
     FourInstallment = 5
+}
+
+public enum RequestStep : byte
+{
+    [Description("ایجاد")]
+    Create = 1,
+
+    [Description("در انتظار آپلود مدارک")]
+    UploadDocumentUploadDocuments = 2,
+
+    [Description("تکمیل شده")]
+    Finalizing = 3,
+
 }

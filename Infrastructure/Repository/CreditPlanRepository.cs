@@ -1,6 +1,5 @@
-﻿using Application.Abstraction.IRepository;
-using Application.Model;
-using Domain.Entites;
+﻿using Application.Abstraction;
+using Domain;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,29 +12,19 @@ namespace Infrastructure.Repository;
 
 public class CreditPlanRepository : ICreditPlanRepository
 {
-    private readonly LoanManagmentDbContext _context;
-    public CreditPlanRepository(LoanManagmentDbContext context)
+    private readonly LoanManagmentDbContext _dbContext;
+    public CreditPlanRepository(LoanManagmentDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
-    public async Task<CreditPlan> GetByFilter(CreditPlanFilter filter , CancellationToken cancellationToken)
+    public async Task<List<CreditPlanModel>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var query = _context.CreditPlans.AsQueryable();
-
-        if (!string.IsNullOrEmpty(filter.Title))
-            query.Where(a => a.Title == filter.Title);
-
-        if (filter.CurrencyId>0)
-            query.Where(a => a.CurrencyId == filter.CurrencyId);
-
-        if (filter.ConfigTypeId > 0)
-            query.Where(a => a.ConfigTypeId == filter.ConfigTypeId);
-
-        if (filter.Enable is not null)
-            query.Where(a => a.Enable == filter.Enable);
-
-        return await query.AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+        return await _dbContext.CreditPlans.AsNoTracking().ToListAsync(cancellationToken);
     }
 
+    public async Task<CreditPlanModel> GetAsync(long id ,CancellationToken cancellationToken)
+    {
+        return await _dbContext.CreditPlans.AsNoTracking().SingleOrDefaultAsync(a=>a.Id == id,cancellationToken);
+    }
 }

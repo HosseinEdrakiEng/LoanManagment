@@ -1,4 +1,4 @@
-﻿using Application.Abstraction.IService;
+﻿using Application.Abstraction;
 using Application.Common;
 using Application.Model;
 using Azure.Core;
@@ -42,7 +42,7 @@ public class WalletServices : IWalletServices
 
         if (!apiResponse.IsSuccessStatusCode)
         {
-            // response.Error = CustomError.BalanceLoanFail;
+             response.Error = CustomErrors.CreateWalletError;
             return response;
         }
 
@@ -65,16 +65,16 @@ public class WalletServices : IWalletServices
         if (!apiResponse.IsSuccessStatusCode
             || string.IsNullOrWhiteSpace(apiResponse.Response))
         {
-            response.Error = CustomErrors.WalletError;
+            response.Error = CustomErrors.ChargeWalletError;
             return response;
         }
 
         response.Data = JsonSerializer.Deserialize<ChargeResponseModel>(apiResponse.Response);
         return response;
     }
-    public async Task<BaseResponse<object>> Advice(AdviceRequestModel request, CancellationToken cancellationToken)
+    public async Task<BaseResponse<AdviceResponseModel>> Advice(AdviceRequestModel request, CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<object>();
+        var response = new BaseResponse<AdviceResponseModel>();
 
         var headers = new Dictionary<string, string>
             {
@@ -87,16 +87,14 @@ public class WalletServices : IWalletServices
 
         if (!apiResponse.IsSuccessStatusCode)
         {
-            // response.Error = CustomError.BalanceLoanFail;
+            response.Error = CustomErrors.AdviceWalletError;
             return response;
         }
-
-        response.Data = JsonSerializer.Deserialize<object>(apiResponse.Response);
         return response;
     }
-    public async Task<BaseResponse<object>> Reverse(ReverseRequestModel request, CancellationToken cancellationToken)
+    public async Task<BaseResponse<ReverseResponseModel>> Reverse(ReverseRequestModel request, CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<object>();
+        var response = new BaseResponse<ReverseResponseModel>();
 
         var headers = new Dictionary<string, string>
             {
@@ -109,11 +107,9 @@ public class WalletServices : IWalletServices
 
         if (!apiResponse.IsSuccessStatusCode)
         {
-            // response.Error = CustomError.BalanceLoanFail;
+            response.Error = CustomErrors.ReverseWalletError;
             return response;
         }
-
-        response.Data = JsonSerializer.Deserialize<object>(apiResponse.Response);
         return response;
     }
 

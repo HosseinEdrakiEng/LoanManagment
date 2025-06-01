@@ -1,6 +1,4 @@
 ﻿using Application.Abstraction;
-using Application.Abstraction.IRepository;
-using Application.Abstraction.IService;
 using Application.Common;
 using Helper;
 using Infrastructure.Persistence;
@@ -41,6 +39,12 @@ namespace Infrastructure
         public static IServiceCollection AddService(this IServiceCollection services)
         {
             services.AddScoped<ICreditRequestServices, CreditRequestServices>();
+            services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<IWalletServices, WalletServices>();
+            services.AddScoped<IInquiryServices, InquiryServices>();
+
+            //To Do
+            services.AddSingleton<BackgroundWorkerService>();
             return services;
         }
     }

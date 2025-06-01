@@ -1,4 +1,4 @@
-﻿using Application.Abstraction.IService;
+﻿using Application.Abstraction;
 using Application.Model;
 using Asp.Versioning;
 using Azure;

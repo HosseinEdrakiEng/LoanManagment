@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
 builder.Services.AddProviderHttpClient(builder.Configuration, "Wallet", "WalletConfig");
 builder.Services.AddProviderHttpClient(builder.Configuration, "Inquery", "InqueryConfig");
+builder.Services.AddProviderHttpClient(builder.Configuration, "User", "UserConfig");
 builder.Services.AddReqResLogging();
 builder.Services.AddOptions();
 builder.Services.AddApiVersion();

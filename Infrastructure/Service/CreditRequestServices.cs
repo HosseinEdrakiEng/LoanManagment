@@ -1,7 +1,7 @@
 ﻿using Application.Abstraction;
-using Application.Abstraction.IService;
 using Application.Common;
 using Application.Model;
+using Azure;
 using Azure.Core;
 using Domain;
 using Helper;
@@ -56,17 +56,9 @@ public class CreditRequestServices(ICreditRequestRepository creditRequestReposit
             }
 
             //To Do : change currencyId
-            var createWalletRequest = new CreateWalletRequestModel(creditPlan.LoanType, 1, request.MobileNumber, (long)creditPlan.GroupId);
-            var createWallet = await walletServices.CreateWallet(createWalletRequest, cancellationToken);
-            if (createWallet.HasError)
-            {
-                response.Error = createWallet.Error;
-                return response;
-            }
-
-            string clientRefNo = Extention.GenerateRandomCode();
-            var chargeRequest = new ChargeRequestModel(creditPlan.LoanType, 1, request.MobileNumber, (long)creditPlan.GroupId, userAmount.Data.Amount, clientRefNo);
-            var chargeResponse = await walletServices.Charge(chargeRequest, cancellationToken);
+            var currencyId = 1;
+            var chargeRequest = new ChargeRequestModel(creditPlan.LoanType, currencyId, request.MobileNumber, (long)creditPlan.GroupId, userAmount.Data.Amount, Extention.GenerateRandomCode());
+            var chargeResponse = await InitializeWalletAsync(chargeRequest, cancellationToken);
             if (chargeResponse.HasError)
             {
                 response.Error = chargeResponse.Error;
@@ -76,9 +68,7 @@ public class CreditRequestServices(ICreditRequestRepository creditRequestReposit
             await InsertCerditRequest(request, RequestStep.Finalizing, cancellationToken);
         }
         else
-        {
             response.Error = CustomErrors.LoanTypeNotBusiness;
-        }
 
         return response;
     }
@@ -109,6 +99,40 @@ public class CreditRequestServices(ICreditRequestRepository creditRequestReposit
         response.Data = await limitationRepository.GetAsync(filter, cancellationToken);
         return response;
 
+    }
+
+    private async Task<BaseResponse<ChargeResponseModel>> InitializeWalletAsync(ChargeRequestModel request, CancellationToken cancellationToken)
+    {
+        var response = new BaseResponse<ChargeResponseModel>();
+
+        var createWalletRequest = new CreateWalletRequestModel(request.ConfigType, request.Currency, request.PhoneNumber, request.GroupId);
+        var createWallet = await walletServices.CreateWallet(createWalletRequest, cancellationToken);
+        if (createWallet.HasError)
+        {
+            response.Error = createWallet.Error;
+            return response;
+        }
+
+        var chargeResponse = await walletServices.Charge(request, cancellationToken);
+        if (chargeResponse.HasError)
+        {
+            response.Error = chargeResponse.Error;
+           
+            var reverseRequest = new ReverseRequestModel(null,request.ClientRefNo);
+            var reverseResponse = await walletServices.Reverse(reverseRequest, cancellationToken);
+            if (reverseResponse.HasError)
+                response.Error = reverseResponse.Error;
+
+            return response;
+        }
+        var adviceRequest = new AdviceRequestModel(chargeResponse.Data.TrackingCode);
+        var adviceResponse =  await walletServices.Advice(adviceRequest, cancellationToken);
+        if (adviceResponse.HasError)
+        {
+            response.Error = adviceResponse.Error;
+            return response;
+        }
+        return response;
     }
 
     #endregion

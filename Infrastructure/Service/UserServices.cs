@@ -1,5 +1,4 @@
-﻿using Application.Abstraction;
-using Application.Common;
+﻿using Application.Common;
 using Application.Model;
 using Helper;
 using Microsoft.Extensions.Logging;
@@ -11,6 +10,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Application.Common;
+using Application.Abstraction;
 
 namespace Infrastructure.Service;
 
@@ -42,7 +42,7 @@ public class UserServices : IUserServices
 
         if (!apiResponse.IsSuccessStatusCode)
         {
-            response.Error = CustomErrors.ApiCallError;
+            response.Error = CustomErrors.UserProfileError;
             return response;
         }
 

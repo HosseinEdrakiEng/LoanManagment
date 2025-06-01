@@ -7,4 +7,5 @@ using System.Threading.Tasks;
 namespace Application.Model;
 
 public record AdviceRequestModel(string TrackingCode);
+public record AdviceResponseModel();
 

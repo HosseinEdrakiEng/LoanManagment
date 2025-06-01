@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Abstraction.IService;
+namespace Application.Abstraction;
 
 public interface IInquiryServices
 {
-    Task<BaseResponse<RaitingResponseModel>> Raiting(string nationalCode, CancellationToken cancellationToken);
+    //Task<BaseResponse<RaitingResponseModel>> Raiting(string nationalCode, CancellationToken cancellationToken);
 }

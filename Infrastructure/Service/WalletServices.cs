@@ -60,7 +60,7 @@ public class WalletServices : IWalletServices
 
         var apiResponse = await _httpClientFactory.ApiCall("Wallet", request, HttpMethod.Post, _config.ChargeUrl, headers, cancellationToken);
 
-        _logger.LogInformation($"Charge log : '{apiResponse.SerializeAsJson()}'");
+        _logger.LogInformation($"Charge Wallet log : '{apiResponse.SerializeAsJson()}'");
 
         if (!apiResponse.IsSuccessStatusCode
             || string.IsNullOrWhiteSpace(apiResponse.Response))

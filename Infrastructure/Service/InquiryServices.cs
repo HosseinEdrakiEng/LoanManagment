@@ -36,9 +36,9 @@ public class InquiryServices : IInquiryServices
     //        {
     //            { "Content-Type", "application/json" }
     //        };
-    //    var apiResponse = await _httpClientFactory.ApiCall("Wallet", new object(), HttpMethod.Get, $"{_config.RatingUrl}/{nationalCode}", headers, cancellationToken);
+    //    var apiResponse = await _httpClientFactory.ApiCall("Inquiry", new object(), HttpMethod.Get, $"{_config.RatingUrl}/{nationalCode}", headers, cancellationToken);
 
-    //    _logger.LogInformation($"CreateWallet log : '{apiResponse.SerializeAsJson()}'");
+    //    _logger.LogInformation($"Raiting log : '{apiResponse.SerializeAsJson()}'");
 
     //    if (!apiResponse.IsSuccessStatusCode)
     //    {

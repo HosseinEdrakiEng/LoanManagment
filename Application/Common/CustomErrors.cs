@@ -21,7 +21,7 @@ public static class CustomErrors
     public static readonly Error AdviceWalletError = new("56", "Advice Wallet Is Fail.", HttpStatusCode.BadRequest);
     public static readonly Error ReverseWalletError = new("57", "Reverse Wallet Is Fail.", HttpStatusCode.BadRequest);
    
-    public static readonly Error UserProfileError = new("57", "User Profile Is Fail.", HttpStatusCode.BadRequest);
+    public static readonly Error UserProfileError = new("58", "User Profile Is Fail.", HttpStatusCode.BadRequest);
     
 
 

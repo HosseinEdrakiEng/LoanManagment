@@ -33,6 +33,9 @@ namespace Infrastructure
         public static IServiceCollection AddRepository(this IServiceCollection services)
         {
             services.AddScoped<ICreditPlanRepository, CreditPlanRepository>();
+            services.AddScoped<ICreditRequestRepository, CreditRequestRepository>();
+            services.AddScoped<ILimitationRepository, LimitationRepository>();
+            
             return services;
         }
 

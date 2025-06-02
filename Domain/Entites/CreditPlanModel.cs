@@ -37,7 +37,7 @@ public class CreditPlanModel : BaseEntity
 
     public int? CommissionCalculateType { get; set; }
 
-    public virtual ICollection<CreditRequestModel> CreditRequests { get; set; } = new List<CreditRequestModel>();
+    public ICollection<CreditRequestModel> CreditRequests { get; set; } = new List<CreditRequestModel>();
 
-    public virtual ICollection<LimitationModel> Limitations { get; set; } = new List<LimitationModel>();
+    public ICollection<LimitationModel> Limitations { get; set; } = new List<LimitationModel>();
 }

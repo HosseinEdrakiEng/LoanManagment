@@ -22,7 +22,7 @@ public  class CreditLoanModel : BaseEntity
     public long Amount { get; set; }
 
 
-    public virtual CreditRequestModel CreditRequest { get; set; } = null!;
+    public CreditRequestModel CreditRequest { get; set; } = null!;
 
-    public virtual ICollection<InstallmentModel> Installments { get; set; } = new List<InstallmentModel>();
+    public ICollection<InstallmentModel> Installments { get; set; } = new List<InstallmentModel>();
 }

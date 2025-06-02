@@ -15,7 +15,7 @@ public class CreditRequestModel : BaseEntity
 
     public byte Status { get; set; }
 
-    public virtual ICollection<CreditLoanModel> CreditLoans { get; set; } = new List<CreditLoanModel>();
+    public ICollection<CreditLoanModel> CreditLoans { get; set; } = new List<CreditLoanModel>();
 
-    public virtual CreditPlanModel CreditPlan { get; set; } = null!;
+    public CreditPlanModel CreditPlan { get; set; } = null!;
 }

@@ -14,7 +14,7 @@ public class LimitationModel :BaseEntity
 
     public long Amount { get; set; }
 
-    public virtual CreditLevelModel CreditLevel { get; set; } = null!;
+    public CreditLevelModel CreditLevel { get; set; } = null!;
 
-    public virtual CreditPlanModel CreditPlan { get; set; } = null!;
+    public CreditPlanModel CreditPlan { get; set; } = null!;
 }

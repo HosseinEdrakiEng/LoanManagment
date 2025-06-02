@@ -9,5 +9,5 @@ public class CreditLevelModel : BaseEntity
 
     public string Title { get; set; }
 
-    public virtual ICollection<LimitationModel> Limitations { get; set; } = new List<LimitationModel>();
+    public ICollection<LimitationModel> Limitations { get; set; } = new List<LimitationModel>();
 }

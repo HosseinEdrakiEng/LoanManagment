@@ -1,15 +1,9 @@
-﻿using Application.Model;
-using Domain;
-using Domain.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain;
 
 namespace Application.Abstraction;
 
 public interface ICreditPlanRepository
 {
     Task<CreditPlanModel> GetAsync(long id, CancellationToken cancellationToken);
+    Task<List<CreditPlanModel>> LoadCreditPlans(long groupId, int score, string level, CancellationToken cancellationToken);
 }

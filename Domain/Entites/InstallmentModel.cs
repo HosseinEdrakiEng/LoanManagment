@@ -25,9 +25,9 @@ public class InstallmentModel : BaseEntity
 
     public long? InstallmentRefId { get; set; }
 
-    public virtual CreditLoanModel CreditLoan { get; set; } = null!;
+    public CreditLoanModel CreditLoan { get; set; } = null!;
 
-    public virtual InstallmentModel? InstallmentRef { get; set; }
+    public InstallmentModel? InstallmentRef { get; set; }
 
-    public virtual ICollection<InstallmentModel> InverseInstallmentRef { get; set; } = new List<InstallmentModel>();
+    public ICollection<InstallmentModel> InverseInstallmentRef { get; set; } = new List<InstallmentModel>();
 }

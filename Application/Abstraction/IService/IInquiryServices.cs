@@ -10,5 +10,5 @@ namespace Application.Abstraction;
 
 public interface IInquiryServices
 {
-    //Task<BaseResponse<RaitingResponseModel>> Raiting(string nationalCode, CancellationToken cancellationToken);
+    Task<BaseResponse<RaitingResponseModel>> PersonScore(string nationalCode, CancellationToken cancellationToken);
 }

@@ -17,6 +17,7 @@ namespace Infrastructure
             
             services.Configure<InqueryConfig>(configuration.GetSection("InqueryConfig"));
             services.Configure<WalletConfig>(configuration.GetSection("WalletConfig"));
+            services.Configure<UserConfig>(configuration.GetSection("UserConfig"));
             return services;
         }
 
@@ -33,6 +34,9 @@ namespace Infrastructure
         public static IServiceCollection AddRepository(this IServiceCollection services)
         {
             services.AddScoped<ICreditPlanRepository, CreditPlanRepository>();
+            services.AddScoped<ICreditRequestRepository, CreditRequestRepository>();
+            services.AddScoped<ILimitationRepository, LimitationRepository>();
+            
             return services;
         }
 
@@ -42,6 +46,11 @@ namespace Infrastructure
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IWalletServices, WalletServices>();
             services.AddScoped<IInquiryServices, InquiryServices>();
+
+            services.AddScoped<ICreditRequestStrategy, UploadDocumentStrategy>();
+            services.AddScoped<ICreditRequestStrategy, LoanProcessingStrategy>();
+
+            services.AddScoped<CreditRequestStrategyFactory>();
 
             //To Do
             services.AddSingleton<BackgroundWorkerService>();

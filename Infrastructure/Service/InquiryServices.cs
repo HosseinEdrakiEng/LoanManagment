@@ -28,25 +28,25 @@ public class InquiryServices : IInquiryServices
         _config = config.Value;
     }
 
-    //public async Task<BaseResponse<RaitingResponseModel>> Raiting(string nationalCode, CancellationToken cancellationToken)
-    //{
-    //    var response = new BaseResponse<RaitingResponseModel>();
+    public async Task<BaseResponse<RaitingResponseModel>> PersonScore(string nationalCode, CancellationToken cancellationToken)
+    {
+        var response = new BaseResponse<RaitingResponseModel>();
 
-    //    var headers = new Dictionary<string, string>
-    //        {
-    //            { "Content-Type", "application/json" }
-    //        };
-    //    var apiResponse = await _httpClientFactory.ApiCall("Wallet", new object(), HttpMethod.Get, $"{_config.RatingUrl}/{nationalCode}", headers, cancellationToken);
+        var headers = new Dictionary<string, string>
+            {
+                { "Content-Type", "application/json" }
+            };
+        var apiResponse = await _httpClientFactory.ApiCall("Inquiry", new object(), HttpMethod.Get, $"{_config.PersonScoreUrl}/{nationalCode}", headers, cancellationToken);
 
-    //    _logger.LogInformation($"CreateWallet log : '{apiResponse.SerializeAsJson()}'");
+        _logger.LogInformation($"PersonScore log : '{apiResponse.SerializeAsJson()}'");
 
-    //    if (!apiResponse.IsSuccessStatusCode)
-    //    {
-    //        // response.Error = CustomError.BalanceLoanFail;
-    //        return response;
-    //    }
+        if (!apiResponse.IsSuccessStatusCode)
+        {
+            response.Error = CustomErrors.PersonScoreError;
+            return response;
+        }
 
-    //    response.Data = JsonSerializer.Deserialize<RaitingResponseModel>(apiResponse.Response);
-    //    return response;
-    //}
+        response.Data = JsonSerializer.Deserialize<RaitingResponseModel>(apiResponse.Response);
+        return response;
+    }
 }

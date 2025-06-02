@@ -46,7 +46,6 @@ namespace Infrastructure
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IWalletServices, WalletServices>();
             services.AddScoped<IInquiryServices, InquiryServices>();
-            
 
             services.AddScoped<ICreditRequestStrategy, UploadDocumentStrategy>();
             services.AddScoped<ICreditRequestStrategy, LoanProcessingStrategy>();

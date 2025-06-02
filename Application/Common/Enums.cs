@@ -29,7 +29,6 @@ public enum LoanType : byte
     [Description("FourInstallment")]
     FourInstallment = 5
 }
-
 public enum RequestStep : byte
 {
 
@@ -38,5 +37,43 @@ public enum RequestStep : byte
 
     [Description("تکمیل شده")]
     Finalizing = 2,
+
+}
+public enum GuarantyType
+{
+    /// <summary>
+    /// ضمانت براساس چک
+    /// </summary>
+    Cheque = 1,
+
+    /// <summary>
+    /// ضمانت براساس سفته
+    /// </summary>
+    PromissoryNote = 2,
+
+    /// <summary>
+    /// گواهی کسر از حقوق
+    /// </summary>
+    PayrollDeducation = 3,
+
+    /// <summary>
+    /// بدون ضمانت
+    /// </summary>
+    WithoutGuaranty = 4
+}
+public enum PaymentType
+{
+
+    /// <summary>
+    /// پرداخت چک به ازای اقساط
+    /// </summary>
+    [Description("پرداخت چک به ازای اقساط")]
+    ByCheque = 1,
+
+    /// <summary>
+    /// پرداخت نقدی اقساط در موعد مقرر
+    /// </summary>
+    [Description("پرداخت نقدی اقساط در موعد مقرر")]
+    ByInstallment = 2
 
 }

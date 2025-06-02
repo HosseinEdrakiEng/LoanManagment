@@ -16,16 +16,18 @@ namespace Infrastructure.Service
     {
         private readonly IWalletServices _walletServices;
         private readonly IUserServices _userServices ;
+        private readonly IInquiryServices _inquiryServices;
         private readonly ILimitationRepository _limitationRepository;
         private readonly ICreditRequestRepository _creditRequestRepository;
 
-        public LoanProcessingStrategy(IWalletServices walletServices, IUserServices userServices,
+        public LoanProcessingStrategy(IWalletServices walletServices, IUserServices userServices, IInquiryServices inquiryServices,
             ILimitationRepository limitationRepository, ICreditRequestRepository creditRequestRepository)
         {
             _walletServices = walletServices;
             _limitationRepository = limitationRepository;
             _creditRequestRepository = creditRequestRepository;
             _userServices = userServices;
+            _inquiryServices = inquiryServices;
         }
 
         public async Task<BaseResponse<CreateCerditRequestResponseModel>> ProcessAsync(CreateCerditRequestModel request, CreditPlanModel creditPlan, CancellationToken cancellationToken)
@@ -41,7 +43,7 @@ namespace Infrastructure.Service
 
             //To Do : change currencyId
             var currencyId = 1;
-            var chargeRequest = new ChargeRequestModel(creditPlan.LoanType, currencyId, request.MobileNumber, (long)creditPlan.GroupId, userAmount.Data.Amount, Extention.GenerateRandomCode());
+            var chargeRequest = new ChargeRequestModel(creditPlan.LoanType, currencyId, request.MobileNumber, (long)creditPlan.GroupId,10000, Extention.GenerateRandomCode());// userAmount.Data.Amount
             var chargeResponse = await InitializeWalletAsync(chargeRequest, cancellationToken);
             if (chargeResponse.HasError)
             {
@@ -90,18 +92,25 @@ namespace Infrastructure.Service
         private async Task<BaseResponse<LimitationModel>> GetUserAmountAsync(string mobileNumber, long planId, CancellationToken cancellationToken)
         {
             var response = new BaseResponse<LimitationModel>();
-            var userInfo = await _userServices.Profile(mobileNumber, cancellationToken);
 
+            var userInfo = await _userServices.Profile(mobileNumber, cancellationToken);
             if (userInfo.HasError || userInfo.Data is null)
             {
                 response.Error = userInfo.HasError ? userInfo.Error : CustomErrors.UserDataIsEmpty;
                 return response;
             }
 
+            var personScore = await _inquiryServices.PersonScore(userInfo.Data.NationalCode, cancellationToken);
+            if (personScore.HasError || personScore.Data is null)
+            {
+                response.Error = personScore.HasError ? personScore.Error : CustomErrors.PersonScoreIsEmpty;
+                return response;
+            }
+
             var filter = new LimitationFilterModel
             {
                 Level = userInfo.Data.Level,
-                Score = int.Parse(userInfo.Data.Score),
+                Score = (int)personScore.Data.Score,
                 PlanId = planId
             };
 

@@ -1,6 +1,4 @@
 ﻿using Domain.Entites;
-using System;
-using System.Collections.Generic;
 
 namespace Domain;
 
@@ -36,6 +34,8 @@ public class CreditPlanModel : BaseEntity
     public int? PrePaymentPercentage { get; set; }
 
     public int? CommissionCalculateType { get; set; }
+
+    public int CurrencyId { get; set; }
 
     public ICollection<CreditRequestModel> CreditRequests { get; set; } = new List<CreditRequestModel>();
 

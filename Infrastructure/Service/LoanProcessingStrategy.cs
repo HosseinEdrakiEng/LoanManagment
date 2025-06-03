@@ -4,18 +4,13 @@ using Application.Model;
 using Domain;
 using Helper;
 using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Service
 {
     public class LoanProcessingStrategy : ICreditRequestStrategy
     {
         private readonly IWalletServices _walletServices;
-        private readonly IUserServices _userServices ;
+        private readonly IUserServices _userServices;
         private readonly IInquiryServices _inquiryServices;
         private readonly ILimitationRepository _limitationRepository;
         private readonly ICreditRequestRepository _creditRequestRepository;
@@ -34,7 +29,7 @@ namespace Infrastructure.Service
         {
             var response = new BaseResponse<CreateCerditRequestResponseModel>();
 
-            var userAmount = await GetUserAmountAsync(request.MobileNumber, request.PlanId, cancellationToken);
+            var userAmount = await GetUserAmountAsync(request.PhoneNumber, request.PlanId, cancellationToken);
             if (userAmount.HasError)
             {
                 response.Error = userAmount.Error;
@@ -43,7 +38,7 @@ namespace Infrastructure.Service
 
             //To Do : change currencyId
             var currencyId = 1;
-            var chargeRequest = new ChargeRequestModel(creditPlan.LoanType, currencyId, request.MobileNumber, (long)creditPlan.GroupId,10000, Extention.GenerateRandomCode());// userAmount.Data.Amount
+            var chargeRequest = new ChargeRequestModel(creditPlan.LoanType, currencyId, request.PhoneNumber, (long)creditPlan.GroupId, 10000, Extention.GenerateRandomCode());// userAmount.Data.Amount
             var chargeResponse = await InitializeWalletAsync(chargeRequest, cancellationToken);
             if (chargeResponse.HasError)
             {
@@ -51,7 +46,7 @@ namespace Infrastructure.Service
                 return response;
             }
 
-            await InsertCreditRequestAsync(request, RequestStep.Finalizing, cancellationToken);
+            await InsertCreditRequestAsync(request, CreditRequestStatus.Finalizing, cancellationToken);
             return response;
         }
 
@@ -117,7 +112,7 @@ namespace Infrastructure.Service
             response.Data = await _limitationRepository.GetAsync(filter, cancellationToken);
             return response;
         }
-        private async Task InsertCreditRequestAsync(CreateCerditRequestModel request, RequestStep requestStep, CancellationToken cancellationToken)
+        private async Task InsertCreditRequestAsync(CreateCerditRequestModel request, CreditRequestStatus requestStep, CancellationToken cancellationToken)
         {
             var model = request.Adapt<CreditRequestModel>();
             model.Status = (byte)requestStep;

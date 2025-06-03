@@ -4,12 +4,7 @@ using Application.Model;
 using Helper;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Service;
 
@@ -33,14 +28,15 @@ public class InquiryServices : IInquiryServices
         var response = new BaseResponse<RaitingResponseModel>();
 
         var headers = new Dictionary<string, string>
-            {
-                { "Content-Type", "application/json" }
-            };
-        var apiResponse = await _httpClientFactory.ApiCall("Inquiry", new object(), HttpMethod.Get, $"{_config.PersonScoreUrl}/{nationalCode}", headers, cancellationToken);
+        {
+            { "Content-Type", "application/json" }
+        };
+        var apiResponse = await _httpClientFactory.ApiCall("Inquiry", new object(), HttpMethod.Get, $"{_config.PersonScoreUrl}?nationalCode={nationalCode}", headers, cancellationToken);
 
         _logger.LogInformation($"PersonScore log : '{apiResponse.SerializeAsJson()}'");
 
-        if (!apiResponse.IsSuccessStatusCode)
+        if (!apiResponse.IsSuccessStatusCode
+            || string.IsNullOrEmpty(apiResponse.Response))
         {
             response.Error = CustomErrors.PersonScoreError;
             return response;

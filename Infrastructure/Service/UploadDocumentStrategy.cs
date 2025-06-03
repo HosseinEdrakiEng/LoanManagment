@@ -4,11 +4,6 @@ using Application.Model;
 using Domain;
 using Helper;
 using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Service;
 
@@ -23,11 +18,11 @@ public class UploadDocumentStrategy : ICreditRequestStrategy
 
     public async Task<BaseResponse<CreateCerditRequestResponseModel>> ProcessAsync(CreateCerditRequestModel request, CreditPlanModel creditPlan, CancellationToken cancellationToken)
     {
-        await InsertCreditRequestAsync(request, RequestStep.UploadDocumentUploadDocuments, cancellationToken);
+        await InsertCreditRequestAsync(request, CreditRequestStatus.WaitUploadDocuments, cancellationToken);
         return new BaseResponse<CreateCerditRequestResponseModel>();
     }
 
-    private async Task InsertCreditRequestAsync(CreateCerditRequestModel request, RequestStep requestStep, CancellationToken cancellationToken)
+    private async Task InsertCreditRequestAsync(CreateCerditRequestModel request, CreditRequestStatus requestStep, CancellationToken cancellationToken)
     {
         var model = request.Adapt<CreditRequestModel>();
         model.Status = (byte)requestStep;

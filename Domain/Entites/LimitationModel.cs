@@ -1,10 +1,8 @@
 ﻿using Domain.Entites;
-using System;
-using System.Collections.Generic;
 
 namespace Domain;
 
-public class LimitationModel :BaseEntity
+public class LimitationModel : BaseEntity
 {
     public int Score { get; set; }
 
@@ -17,4 +15,6 @@ public class LimitationModel :BaseEntity
     public CreditLevelModel CreditLevel { get; set; } = null!;
 
     public CreditPlanModel CreditPlan { get; set; } = null!;
+
+    public ICollection<CreditRequestModel> CreditRequests { get; set; } = new List<CreditRequestModel>();
 }

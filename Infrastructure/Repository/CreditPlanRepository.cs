@@ -26,16 +26,6 @@ public class CreditPlanRepository : ICreditPlanRepository
 
     public async Task<List<CreditPlanModel>> LoadCreditPlans(long groupId, int score, string level, CancellationToken cancellationToken)
     {
-        var t = await _dbContext.CreditPlans.AsNoTracking()
-                .Include(r => r.Limitations)
-                    .ThenInclude(r => r.CreditLevel)
-                .Where(a => a.GroupId == groupId
-                    && !a.IsDeleted
-                    && a.IsActive
-                    && a.Limitations.Any(r => r.CreditLevel.Title == level && r.Score == score))
-                .ToQueryString();
-
-
         var plans = await _dbContext.CreditPlans.AsNoTracking()
                         .Include(r => r.Limitations)
                             .ThenInclude(r => r.CreditLevel)

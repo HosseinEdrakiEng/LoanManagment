@@ -1,6 +1,5 @@
 ﻿using Application.Abstraction;
 using Domain;
-using Domain.Entites;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence
@@ -70,6 +69,11 @@ namespace Infrastructure.Persistence
                     .HasForeignKey(d => d.CreditPlanId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CreditRequests_CreditPlans");
+
+                entity.HasOne(d => d.Limitation).WithMany(p => p.CreditRequests)
+                    .HasForeignKey(d => d.LimitationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CreditRequests_Limitations");
             });
 
             modelBuilder.Entity<InstallmentModel>(entity =>

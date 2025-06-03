@@ -1,36 +1,30 @@
 ﻿using Application.Abstraction;
-using Application.Abstraction;
 using Application.Common;
 using Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Service
 {
     public class CreditRequestStrategyFactory
     {
-        private readonly Dictionary<RequestStep, ICreditRequestStrategy> _strategies;
+        private readonly Dictionary<CreditRequestStatus, ICreditRequestStrategy> _strategies;
 
         public CreditRequestStrategyFactory(IEnumerable<ICreditRequestStrategy> strategies)
         {
             _strategies = strategies.ToDictionary(strategy => strategy.GetType().Name.Contains("Upload")
-                ? RequestStep.UploadDocumentUploadDocuments
-                : RequestStep.Finalizing);
+                ? CreditRequestStatus.WaitUploadDocuments
+                : CreditRequestStatus.Finalizing);
         }
 
         public ICreditRequestStrategy GetStrategy(CreditPlanModel creditPlan)
         {
             if (creditPlan.GuarantyType.HasValue && creditPlan.GuarantyType > 0)
             {
-                return _strategies[RequestStep.UploadDocumentUploadDocuments];
+                return _strategies[CreditRequestStatus.WaitUploadDocuments];
             }
 
             if (creditPlan.LoanType is (int)LoanType.Bnpl or (int)LoanType.FourInstallment or (int)LoanType.Credit)
             {
-                return _strategies[RequestStep.Finalizing];
+                return _strategies[CreditRequestStatus.Finalizing];
             }
 
             throw new InvalidOperationException("Unsupported credit request type.");

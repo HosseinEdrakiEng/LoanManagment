@@ -1,10 +1,8 @@
 ﻿using Domain.Entites;
-using System;
-using System.Collections.Generic;
 
 namespace Domain;
 
-public  class CreditLoanModel : BaseEntity
+public class CreditLoanModel : BaseEntity
 {
 
     public long CreditRequestId { get; set; }

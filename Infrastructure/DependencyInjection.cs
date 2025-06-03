@@ -1,6 +1,6 @@
 ﻿using Application.Abstraction;
+using Application.Abstraction.IService;
 using Application.Common;
-using Helper;
 using Infrastructure.Persistence;
 using Infrastructure.Repository;
 using Infrastructure.Service;
@@ -14,7 +14,6 @@ namespace Infrastructure
     {
         public static IServiceCollection ConfigureOption(this IServiceCollection services, IConfiguration configuration)
         {
-            
             services.Configure<InqueryConfig>(configuration.GetSection("InqueryConfig"));
             services.Configure<WalletConfig>(configuration.GetSection("WalletConfig"));
             services.Configure<UserConfig>(configuration.GetSection("UserConfig"));
@@ -36,24 +35,21 @@ namespace Infrastructure
             services.AddScoped<ICreditPlanRepository, CreditPlanRepository>();
             services.AddScoped<ICreditRequestRepository, CreditRequestRepository>();
             services.AddScoped<ILimitationRepository, LimitationRepository>();
-            
+
             return services;
         }
 
         public static IServiceCollection AddService(this IServiceCollection services)
         {
+            services.AddScoped<ICreditPlanService, CreditPlanService>();
             services.AddScoped<ICreditRequestServices, CreditRequestServices>();
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IWalletServices, WalletServices>();
             services.AddScoped<IInquiryServices, InquiryServices>();
 
-            services.AddScoped<ICreditRequestStrategy, UploadDocumentStrategy>();
-            services.AddScoped<ICreditRequestStrategy, LoanProcessingStrategy>();
-
-            services.AddScoped<CreditRequestStrategyFactory>();
-
-            //To Do
-            services.AddSingleton<BackgroundWorkerService>();
+            //services.AddScoped<ICreditRequestStrategy, UploadDocumentStrategy>();
+            //services.AddScoped<ICreditRequestStrategy, LoanProcessingStrategy>();
+            //services.AddScoped<CreditRequestStrategyFactory>();
             return services;
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace LoanManagment.Api.Model;
+﻿using System.ComponentModel.DataAnnotations;
 
-public record CreateCreditRequest(long PlanId);
+namespace LoanManagment.Api.Model;
+
+public record CreateCreditRequest([Required] long PlanId);
 

@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace Application.Common;
 
-
-public enum CreditPlanType : byte
-{
-    None = 0
-}
 public enum LoanType : byte
 {
     [Description("نقدی")]
@@ -29,11 +19,11 @@ public enum LoanType : byte
     [Description("FourInstallment")]
     FourInstallment = 5
 }
-public enum RequestStep : byte
+public enum CreditRequestStatus : byte
 {
 
     [Description("در انتظار آپلود مدارک")]
-    UploadDocumentUploadDocuments = 1,
+    WaitUploadDocuments = 1,
 
     [Description("تکمیل شده")]
     Finalizing = 2,
@@ -63,17 +53,8 @@ public enum GuarantyType
 }
 public enum PaymentType
 {
-
-    /// <summary>
-    /// پرداخت چک به ازای اقساط
-    /// </summary>
-    [Description("پرداخت چک به ازای اقساط")]
-    ByCheque = 1,
-
-    /// <summary>
-    /// پرداخت نقدی اقساط در موعد مقرر
-    /// </summary>
-    [Description("پرداخت نقدی اقساط در موعد مقرر")]
-    ByInstallment = 2
-
+    Cheque = 1,
+    ChequeOnPurchase = 2,
+    LinkPayment = 3,
+    DirectDebit = 4
 }

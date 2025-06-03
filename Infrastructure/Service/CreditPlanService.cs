@@ -9,13 +9,14 @@ namespace Infrastructure.Service
 {
     public class CreditPlanService : ICreditPlanService
     {
-        private readonly ICreditPlanRepository _creditPlanRepository;
+        private readonly ILimitationRepository _limitationRepository;
         private readonly IUserServices _userServices;
+        private readonly IInquiryServices _inquiryServices;
 
-        public CreditPlanService(ICreditPlanRepository creditPlanRepository
+        public CreditPlanService(ILimitationRepository limitationRepository
             , IUserServices userServices)
         {
-            _creditPlanRepository = creditPlanRepository;
+            _limitationRepository = limitationRepository;
             _userServices = userServices;
         }
 
@@ -30,35 +31,22 @@ namespace Infrastructure.Service
                 return response;
             }
 
-            var creditPlan = await _creditPlanRepository.LoadCreditPlans(request.GroupId, int.Parse(user.Data.Score), user.Data.Level, cancellationToken);
-            if (creditPlan is null 
+            var personScore = await _inquiryServices.PersonScore(request.NationalCode, cancellationToken);
+            if (personScore.HasError)
+            {
+                response.Error = personScore.Error;
+                return response;
+            }
+
+            var creditPlan = await _limitationRepository.LoadLimitationCreditPlans(request.GroupId, personScore.Data.Score.Value, user.Data.Level, cancellationToken);
+            if (creditPlan is null
                 || creditPlan.Count == 0)
             {
                 response.Error = CustomErrors.UndefinedPlan;
                 return response;
             }
 
-            var result = creditPlan?.SelectMany(r => r.Limitations)?.ToList();
-            response.Data = [.. result.Select(r => new LoadCreditPlanResponseModel 
-            { 
-                Amount = r.Amount,
-                AnnualInterestRate = r.CreditPlan.AnnualInterestRate,
-                CommissionCalculateType = r.CreditPlan.CommissionCalculateType,
-                CommissionPercentage = r.CreditPlan.CommissionPercentage,
-                ExpirationDate = r.CreditPlan.ExpirationDate,
-                FineRate = r.CreditPlan.FineRate,
-                GuarantyType = r.CreditPlan.GuarantyType,
-                InstallmentCount = r.CreditPlan.InstallmentCount,
-                InstalmentType = r.CreditPlan.InstalmentType,
-                LoanType = r.CreditPlan.LoanType,
-                PaymentType = r.CreditPlan.PaymentType,
-                PrePaymentPercentage = r.CreditPlan.PrePaymentPercentage,
-                RepaymentDeadline = r.CreditPlan.RepaymentDeadline,
-                UsagePeriod = r.CreditPlan.UsagePeriod,
-                Title = r.CreditPlan.Title,
-                Id = r.CreditPlan.Id,
-            })];
-
+            response.Data = creditPlan.Adapt<List<LoadCreditPlanResponseModel>>();
             return response;
         }
     }

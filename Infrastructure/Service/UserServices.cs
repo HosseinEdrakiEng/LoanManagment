@@ -13,6 +13,7 @@ public class UserServices : IUserServices
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<UserServices> _logger;
     private readonly UserConfig _config;
+
     public UserServices(IHttpClientFactory httpClientFactory,
         ILogger<UserServices> logger,
         IOptions<UserConfig> config)
@@ -30,6 +31,7 @@ public class UserServices : IUserServices
         {
             { "Content-Type", "application/json" }
         };
+
         var apiResponse = await _httpClientFactory.ApiCall("User", new object(), HttpMethod.Get, $"{_config.ProfileUrl}/{mobileNumber}", headers, cancellationToken);
 
         _logger.LogInformation($"Profile log : '{apiResponse.SerializeAsJson()}'");

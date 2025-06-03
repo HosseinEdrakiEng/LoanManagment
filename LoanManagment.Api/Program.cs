@@ -1,6 +1,5 @@
 using Helper;
 using Infrastructure;
-using Infrastructure.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,10 +18,6 @@ builder.Services.AddReqResLogging();
 builder.Services.AddOptions();
 builder.Services.AddApiVersion();
 builder.Services.AddExceptionMiddleware();
-
-builder.Services.AddHostedService<BackgroundWorkerService>();
-
-
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

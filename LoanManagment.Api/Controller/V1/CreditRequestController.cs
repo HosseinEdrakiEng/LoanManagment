@@ -1,9 +1,7 @@
 ﻿using Application.Abstraction;
 using Application.Model;
 using Asp.Versioning;
-using Azure;
 using Helper;
-using Infrastructure.Service;
 using LoanManagment.Api.Model;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
@@ -24,16 +22,15 @@ namespace LoanManagment.Api.Controller.V1
             _creditRequestServices = creditRequestServices;
         }
 
-        [HttpPost("Create")]
+        [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] CreateCreditRequest request, CancellationToken cancellationToken)
         {
             var model = request.Adapt<CreateCerditRequestModel>();
             model.UserId = HttpContext.GetUserId();
-            model.MobileNumber = HttpContext.GetUserPhonenumber();
+            model.NationalCode = HttpContext.GetUserNationalCode();
 
             var response = await _creditRequestServices.CreateCreditRequest(model, cancellationToken);
             return StatusCode((int)response.Error.StatusCode, response);
         }
     }
 }
- 

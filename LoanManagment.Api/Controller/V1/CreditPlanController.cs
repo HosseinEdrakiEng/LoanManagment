@@ -30,6 +30,7 @@ namespace LoanManagment.Api.Controller.V1
                 ClientId = Request.HttpContext.GetClientId(),
                 GroupId = groupId,
                 PhoneNumber = Request.HttpContext.GetUserPhonenumber(),
+                NationalCode = Request.HttpContext.GetUserNationalCode(),
             };
             var response = await _creditPlanService.LoadCreditPlan(dto, cancellationToken);
             return StatusCode((int)response.Error.StatusCode, response);

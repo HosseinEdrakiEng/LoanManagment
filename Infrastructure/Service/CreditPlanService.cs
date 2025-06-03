@@ -14,10 +14,12 @@ namespace Infrastructure.Service
         private readonly IInquiryServices _inquiryServices;
 
         public CreditPlanService(ILimitationRepository limitationRepository
-            , IUserServices userServices)
+            , IUserServices userServices
+            , IInquiryServices inquiryServices)
         {
             _limitationRepository = limitationRepository;
             _userServices = userServices;
+            _inquiryServices = inquiryServices;
         }
 
         public async Task<BaseResponse<List<LoadCreditPlanResponseModel>>> LoadCreditPlan(LoadCreditPlanRequestModel request, CancellationToken cancellationToken)
